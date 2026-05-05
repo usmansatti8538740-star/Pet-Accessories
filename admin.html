@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawLux | Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"> 
+<style>
+  :root {
+    --accent: #d4af37; /* PawLux Gold */
+    --warm-white: #faf8f5;
+    --navy: #1a1a1a;
+  }
+
+  body {
+    background: var(--warm-white);
+    font-family: 'DM Sans', sans-serif;
+    cursor: none; /* Custom cursor ke liye asli cursor hide kiya */
+  }
+
+  /* CUSTOM CURSOR SYSTEM (As per PawLux Website) */
+  .cursor {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .cursor-ring {
+    width: 35px;
+    height: 35px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.1s ease-out;
+  }
+
+  .admin-container {
+    max-width: 1200px;
+    margin: 100px auto;
+    padding: 20px;
+  }
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 20px;
+  }
+
+  .admin-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--navy);
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    text-align: center;
+    border: 1px solid #f0f0f0;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    color: #666;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  /* Table Style */
+  .management-section {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.03);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th {
+    text-align: left;
+    padding: 15px;
+    background: #fdfdfd;
+    font-family: 'Playfair Display', serif;
+    border-bottom: 2px solid var(--warm-white);
+  }
+
+  td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+  }
+
+  .btn-manage {
+    background: var(--navy);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: 0.3s;
+  }
+
+  .btn-manage:hover {
+    background: var(--accent);
+  }
+
+  .status-badge {
+    background: #fff3e0;
+    color: #ef6c00;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .status-badge.delivered {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .status-badge.shipped {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  /* Admin Nav Tag */
+  .admin-nav-tag {
+    color: var(--accent) !important;
+    font-weight: 600;
+  }
+
+  .empty-orders {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+
+  .order-details-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .order-details-modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-close {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+  }
+
+  .modal-close:hover {
+    color: #333;
+  }
+
+  .order-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .order-detail-row strong {
+    color: #333;
+  }
+
+  .payment-info {
+    background: #faf8f5;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+
+  .clear-orders-btn {
+    background: #ff6b6b;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .clear-orders-btn:hover {
+    background: #ff5252;
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor Elements -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAVIGATION (Linked to all pages) -->
+<nav id="navbar">
+  <a class="logo" href="pawlux_website.html">
+    <div class="logo-icon">🐾</div>
+    <div class="logo-text">Paw<span>Lux</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="shop.html">Shop</a>
+    <a href="products.html">Products</a>
+    <a href="featured.html">Featured</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="offers.html">Offers</a>
+    <a href="admin.html" class="admin-nav-tag">Admin</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-cart" id="cartBtn" onclick="goToCart()">
+      🛒
+      <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<div class="admin-container">
+  <div class="admin-header">
+    <h1 class="admin-title">Admin <em>Dashboard</em></h1>
+    <div class="admin-actions">
+       <button class="btn-manage" onclick="clearAllOrders()" style="background: #ff6b6b; margin-right: 10px;">🗑️ Clear Orders</button>
+       <button class="btn-manage" style="padding: 12px 25px;">+ Add New Product</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number" id="totalOrders">0</span>
+      <span class="stat-label">Total Orders</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" id="totalRevenue">$0</span>
+      <span class="stat-label">Revenue</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">32</span>
+      <span class="stat-label">Stock Items</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">4.9</span>
+      <span class="stat-label">Avg Rating</span>
+    </div>
+  </div>
+
+  <div class="management-section">
+    <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px;">📦 Live Order Tracking</h2>
+    <div id="ordersTableContainer"></div>
+  </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="order-details-modal" id="orderModal">
+  <div class="modal-content" id="modalContent">
+    <span class="modal-close" onclick="closeOrderModal()">&times;</span>
+    <div id="orderDetails"></div>
+  </div>
+</div>
+
+<script>
+  // CURSOR SCRIPT (PawLux Original)
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX - 14 + 'px';
+    ring.style.top = e.clientY - 14 + 'px';
+  });
+
+  function renderOrders() {
+    const container = document.getElementById('ordersTableContainer');
+    const orders = JSON.parse(localStorage.getItem('pawluxOrders') || '[]');
+    
+    // Update stats
+    document.getElementById('totalOrders').textContent = orders.length;
+    
+    let totalRevenue = 0;
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        totalRevenue += item.price * item.qty;
+      });
+    });
+    totalRevenue += orders.length * 10; // Add shipping
+    document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+
+    if (!orders.length) {
+      container.innerHTML = '<div class="empty-orders"><p>📭 No orders yet. Customer orders will appear here.</p></div>';
+      return;
+    }
+
+    let html = `
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Email</th>
+            <th>Product Details</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    orders.forEach((order, index) => {
+      const productNames = order.items.map(item => item.name).join(', ');
+      const statusClass = order.status === 'Delivered' ? 'delivered' : order.status === 'Shipped' ? 'shipped' : '';
+      
+      html += `
+        <tr>
+          <td><strong>${order.id}</strong></td>
+          <td>${order.userName}</td>
+          <td><small>${order.userEmail}</small></td>
+          <td>${productNames}</td>
+          <td>${order.paymentMethod.toUpperCase()}</td>
+          <td><span class="status-badge ${statusClass}">${order.status}</span></td>
+          <td>
+            <button class="btn-manage" onclick="viewOrderDetails(${index})">👁️ View</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+    `;
+
+    container.innerHTML = html;
+  }
+
+  function viewOrderDetails(orderIndex) {
+    const orders = JSON.parse(localStorage.getItem('pawluxOrders') || '[]');
+    const order = orders[orderIndex];
+    
+    let itemsHTML = '';
+    let subtotal = 0;
+    order.items.forEach(item => {
+      const itemTotal = item.price * item.qty;
+      subtotal += itemTotal;
+      itemsHTML += `
+        <div class="order-detail-row">
+          <span>${item.name} x${item.qty}</span>
+          <span>$${itemTotal.toFixed(2)}</span>
+        </div>
+      `;
+    });
+
+    const total = subtotal + 10;
+
+    let paymentInfoHTML = '';
+    if (order.paymentMethod === 'bank') {
+      paymentInfoHTML = `
+        <strong>🏦 Bank Transfer Details:</strong><br>
+        Account Number: ${order.paymentDetails.accountNumber}<br>
+        Bank Name: ${order.paymentDetails.bankName}<br>
+        Account Holder: ${order.paymentDetails.accountHolderName}
+      `;
+    } else if (order.paymentMethod === 'easypaisa') {
+      paymentInfoHTML = `
+        <strong>📱 EasyPaisa Account:</strong><br>
+        Account Number: ${order.paymentDetails.accountNumber}
+      `;
+    } else if (order.paymentMethod === 'jazzcash') {
+      paymentInfoHTML = `
+        <strong>📲 JazzCash Account:</strong><br>
+        Account Number: ${order.paymentDetails.accountNumber}
+      `;
+    }
+
+    const detailsHTML = `
+      <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px;">Order ${order.id}</h2>
+      
+      <h3 style="margin-top: 20px;">👤 Customer Information</h3>
+      <div class="order-detail-row">
+        <strong>Name:</strong>
+        <span>${order.userName}</span>
+      </div>
+      <div class="order-detail-row">
+        <strong>Email:</strong>
+        <span>${order.userEmail}</span>
+      </div>
+      <div class="order-detail-row">
+        <strong>Phone:</strong>
+        <span>${order.userPhone}</span>
+      </div>
+
+      <h3 style="margin-top: 20px;">📦 Order Items</h3>
+      ${itemsHTML}
+      <div class="order-detail-row" style="font-weight: 600; font-size: 1.1rem; border-top: 2px solid #d4af37; padding-top: 15px; margin-top: 10px;">
+        <span>Subtotal:</span>
+        <span>$${subtotal.toFixed(2)}</span>
+      </div>
+      <div class="order-detail-row" style="font-weight: 600; font-size: 1.1rem;">
+        <span>Shipping:</span>
+        <span>$10.00</span>
+      </div>
+      <div class="order-detail-row" style="font-weight: 700; font-size: 1.2rem; color: #d4af37;">
+        <span>Total:</span>
+        <span>$${total.toFixed(2)}</span>
+      </div>
+
+      <h3 style="margin-top: 20px;">💳 Payment Information</h3>
+      <div class="payment-info">
+        ${paymentInfoHTML}
+      </div>
+
+      <div class="order-detail-row" style="margin-top: 20px;">
+        <strong>Order Date:</strong>
+        <span>${order.orderDate}</span>
+      </div>
+      <div class="order-detail-row">
+        <strong>Status:</strong>
+        <span><strong style="color: #d4af37;">${order.status}</strong></span>
+      </div>
+    `;
+
+    document.getElementById('orderDetails').innerHTML = detailsHTML;
+    document.getElementById('orderModal').classList.add('active');
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').classList.remove('active');
+  }
+
+  function clearAllOrders() {
+    if (confirm('🗑️ Are you sure you want to delete all orders? This action cannot be undone.')) {
+      localStorage.removeItem('pawluxOrders');
+      renderOrders();
+      alert('✅ All orders have been cleared.');
+    }
+  }
+
+  // Initialize
+  renderOrders();
+</script>
+</body>
+</html>

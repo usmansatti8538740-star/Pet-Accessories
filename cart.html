@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawLux Cart</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a class="logo" href="pawlux_website.html">
+    <div class="logo-icon">🐾</div>
+    <div class="logo-text">Paw<span>Lux</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="shop.html">Shop</a>
+    <a href="products.html">Products</a>
+    <a href="featured.html">Featured</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="offers.html">Offers</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-cart" id="cartBtn" onclick="goToCart()">
+      🛒
+      <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<section class="section cart-page" style="padding-top: 6rem; padding-bottom: 4rem; background: var(--warm-white);">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Your Cart</div>
+    <h2 class="section-title">Ready to <em>Checkout</em>?</h2>
+  </div>
+  <div class="cart-page" id="cartPage">
+    <div class="cart-items" id="cartItemsContainer"></div>
+    <div class="cart-summary" id="cartSummary"></div>
+  </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
