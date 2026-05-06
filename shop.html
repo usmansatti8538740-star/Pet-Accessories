@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawLux Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<nav id="navbar">
+  <a class="logo" href="pawlux_website.html">
+    <div class="logo-icon">🐾</div>
+    <div class="logo-text">Paw<span>Lux</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="shop.html">Shop</a>
+    <a href="products.html">Products</a>
+    <a href="featured.html">Featured</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="offers.html">Offers</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-cart" id="cartBtn" onclick="goToCart()">
+      🛒
+      <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+<section class="section" id="categories">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Browse by Pet</div>
+    <h2 class="section-title">Shop by <em>Category</em></h2>
+  </div>
+  <div class="categories-grid">
+    <div class="cat-card reveal" style="transition-delay: 0.1s" onclick="window.location.href='products.html'">
+      <div class="cat-icon dogs"><img src="https://tse3.mm.bing.net/th/id/OIP.Kt9VqG9sl8uOPkoH8BAfkgHaEK?pid=Api&h=220&P=0" alt="Dogs" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"></div>
+      <div class="cat-name">Dogs</div>
+      <div class="cat-count">87 products</div>
+      <div class="cat-arrow">Browse all →</div>
+    </div>
+    <div class="cat-card reveal" style="transition-delay: 0.2s" onclick="window.location.href='products.html'">
+      <div class="cat-icon cats"><img src="https://tse1.mm.bing.net/th/id/OIP.peA5ILCfebCRr2LRch1BoAHaFj?pid=Api&h=220&P=0" alt="Cats" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"></div>
+      <div class="cat-name">Cats</div>
+      <div class="cat-count">64 products</div>
+      <div class="cat-arrow">Browse all →</div>
+    </div>
+    <div class="cat-card reveal" style="transition-delay: 0.3s" onclick="window.location.href='products.html'">
+      <div class="cat-icon birds"><img src="https://tse2.mm.bing.net/th/id/OIP.zfeUXoAvjktkVRyH6F9M5QHaEJ?pid=Api&h=220&P=0" alt="Birds" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"></div>
+      <div class="cat-name">Birds</div>
+      <div class="cat-count">32 products</div>
+      <div class="cat-arrow">Browse all →</div>
+    </div>
+    <div class="cat-card reveal" style="transition-delay: 0.4s" onclick="window.location.href='products.html'">
+      <div class="cat-icon small"><img src="https://tse2.mm.bing.net/th/id/OIP.EtZip3SqE20Nb41rFKqdjAHaEo?pid=Api&h=220&P=0" alt="Small Pets" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"></div>
+      <div class="cat-name">Small Pets</div>
+      <div class="cat-count">41 products</div>
+      <div class="cat-arrow">Browse all →</div>
+    </div>
+  </div>
+</section>
+<script src="script.js"></script>
+</body>
+</html>

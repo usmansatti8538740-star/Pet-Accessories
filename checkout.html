@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawLux Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* --- Cursor Setup (Website Theme) --- */
+  body { cursor: none; }
+  .cursor {
+    width: 8px;
+    height: 8px;
+    background: #d4af37;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .cursor-ring {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #d4af37;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.1s ease-out;
+  }
+
+  .checkout-container {
+    max-width: 1200px;
+    margin: 120px auto 60px auto; 
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* Payment Options */
+  .payment-option {
+    padding: 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+  }
+
+  .payment-option:hover { border-color: #d4af37; background: #faf8f5; }
+
+  .payment-option img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+  }
+
+  .payment-details {
+    display: none;
+    padding: 12px;
+    background: #fdfaf3;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+
+  .payment-details.active { display: block; animation: fadeIn 0.4s; }
+
+  /* Success Container */
+  .success-container {
+    display: none;
+    max-width: 600px;
+    margin: 120px auto;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+
+  .success-container.show { display: block; }
+  .checkout-form.hide { display: none; }
+
+  .success-icon {
+    width: 70px;
+    height: 70px;
+    background: #4BB543;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 20px;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor Elements -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a class="logo" href="pawlux_website.html">
+    <div class="logo-icon">🐾</div>
+    <div class="logo-text">Paw<span>Lux</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="shop.html">Shop</a>
+    <a href="products.html">Products</a>
+    <a href="featured.html">Featured</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="offers.html">Offers</a>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-cart" id="cartBtn" onclick="window.location.href='cart.html'">
+      🛒 <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- CHECKOUT FORM -->
+<div class="checkout-container checkout-form" id="checkoutForm">
+  <h1 style="font-family:'Playfair Display'; margin-bottom: 20px;">Checkout</h1>
+  
+  <form id="orderForm" onsubmit="submitOrder(event)">
+    <div class="checkout-grid">
+      <div class="checkout-section">
+        <h3>📋 Shipping Information</h3>
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" name="userName" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" name="userPhone" required>
+        </div>
+
+        <h3 style="margin-top:20px;">💳 Payment Method</h3>
+        <div class="payment-methods">
+          <!-- Bank Transfer (Logo Added) -->
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="bank" onclick="togglePaymentDetails('bank')" required>
+            <img src="https://www.bing.com/th/id/OIP.hx6Xv_z3VzwY38kb6z5FUQHaHa?w=193&h=193&c=8&rs=1&qlt=90&o=6&dpr=1.5&pid=3.1&rm=2" alt="direct bank transfer"
+            <span>Direct Bank Transfer</span>
+          </label>
+
+          <!-- EasyPaisa (Logo Added) -->
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="easypaisa" onclick="togglePaymentDetails('easypaisa')">
+            <img src="data:image/jpeg;base64,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" alt="EasyPaisa">
+            <span>EasyPaisa</span>
+          </label>
+
+          <!-- JazzCash (Logo Added) -->
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="jazzcash" onclick="togglePaymentDetails('jazzcash')">
+            <img src="data:image/jpeg;base64,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" alt="JazzCash">
+            <span>JazzCash</span>
+          </label>
+        </div>
+
+        <div id="bankDetails" class="payment-details">
+          <input type="text" name="accNum" placeholder="IBAN / Account Number">
+        </div>
+        <div id="easypaisaDetails" class="payment-details">
+          <input type="text" name="epNum" placeholder="EasyPaisa Number (03xx...)">
+        </div>
+        <div id="jazzcashDetails" class="payment-details">
+          <input type="text" name="jcNum" placeholder="JazzCash Number (03xx...)">
+        </div>
+      </div>
+
+      <div class="checkout-section">
+        <h3>📦 Order Summary</h3>
+        <div style="background:#faf8f5; padding: 15px; border-radius: 8px;">
+          <div id="orderItemsList"></div>
+          <div style="display:flex; justify-content:space-between; font-weight:bold; color:#d4af37; border-top:2px solid #d4af37; padding-top:10px; margin-top:10px;">
+            <span>Total Amount</span>
+            <span id="totalAmount">$0.00</span>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit" style="width:100%; padding:12px; background:#d4af37; border:none; border-radius:8px; margin-top:20px; font-weight:bold;">
+          ✅ Submit Order
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- SUCCESS PAGE -->
+<div class="success-container" id="successContainer">
+  <div class="success-icon">✓</div>
+  <h2>Order Confirmed!</h2>
+  <p>Your request has been processed successfully.</p>
+  <div style="background:#f9f9f9; padding:15px; border-radius:10px; margin-top:20px; text-align:left;">
+    <p><strong>Order ID:</strong> <span id="resOrderId"></span></p>
+    <p><strong>Total:</strong> <span id="resTotal"></span></p>
+  </div>
+  <button onclick="window.location.href='shop.html'" style="width:100%; padding:12px; background:#1a1a1a; color:white; border:none; border-radius:8px; margin-top:20px;">
+    Back to Shop
+  </button>
+</div>
+
+<script>
+  // --- Cursor Logic ---
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursorRing.style.left = (e.clientX - 11) + 'px';
+    cursorRing.style.top = (e.clientY - 11) + 'px';
+  });
+
+  function togglePaymentDetails(method) {
+    document.querySelectorAll('.payment-details').forEach(el => el.classList.remove('active'));
+    document.getElementById(method + 'Details').classList.add('active');
+  }
+
+  function submitOrder(event) {
+    event.preventDefault();
+    
+    // Foran upar scroll karein taake success message dikhe
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    document.getElementById('checkoutForm').classList.add('hide');
+    document.getElementById('successContainer').classList.add('show');
+
+    document.getElementById('resOrderId').textContent = '#PL-' + Math.floor(Math.random() * 9000);
+    document.getElementById('resTotal').textContent = document.getElementById('totalAmount').textContent;
+
+    localStorage.removeItem('pawluxCart');
+  }
+
+  window.onload = () => {
+    // Total price logic (apne main script se link karein)
+    document.getElementById('totalAmount').textContent = "$100.00";
+  };
+</script>
+
+</body>
+</html>
